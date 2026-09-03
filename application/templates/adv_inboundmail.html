@@ -1,0 +1,168 @@
+{% extends "adv_base.html" %}
+{% block titleTag -%}
+<title>{{ _("Inbound Mail") }} - KindleEar</title>
+{% endblock -%}
+
+{% block advcontent -%}
+<form class="pure-form pure-form-aligned" action="" method="POST">
+  <fieldset>
+  <legend>{{_("Inbound Mail")}}</legend>
+  <p style="margin-top:10px;font-size:0.8em;">
+    {{_("To enable the inbound email feature, you also need to configure the whitelist.")}}
+  </p>
+  <div class="pure-control-group">
+    <label>{{_("Inbound Mail")}}</label>
+    <select class="pure-u-1 pure-u-sm-1-2" name="inbound_email">
+      <option value="" {% if not inbound_email %}selected="selected"{% endif %}>{{_("Disable")}}</option>
+      <option value="forward" {% if 'forward' in inbound_email %}selected="selected"{% endif %}>{{_("Forward Only")}}</option>
+      <option value="save" {% if 'save' in inbound_email %}selected="selected"{% endif %}>{{_("Save Only")}}</option>
+      <option value="save,forward" {% if 'save' in inbound_email and 'forward' in inbound_email %}selected="selected"{% endif %}>{{_("Save and Forward")}}</option>
+    </select>
+  </div>
+  <div class="pure-control-group">
+    <label>{{_("Email Retention")}}</label>
+    <select class="pure-u-1 pure-u-sm-1-2" name="keep_in_email_days">
+      <option value="1" {% if keep_in_email_days==1 %}selected="selected"{% endif %}>{{_("1 Day")}}</option>
+      <option value="7" {% if keep_in_email_days==7 %}selected="selected"{% endif %}>{{_("7 Days")}}</option>
+      <option value="30" {% if keep_in_email_days==30 %}selected="selected"{% endif %}>{{_("30 Days")}}</option>
+      <option value="0" {% if not keep_in_email_days %}selected="selected"{% endif %}>{{_("No limit")}}</option>
+    </select>
+  </div>
+  </fieldset>
+  <p style="text-align:center;">
+    <p style="text-align:center;">
+      <button type="submit" class="pure-button pure-button-primary pure-input-rounded">{{_('Save settings')}} </button>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <a class="pure-button pure-input-rounded" href="/webmail" target="_blank">{{_("Open webmail")}}</a>
+    </p>
+  </p>
+</form>
+<br/>
+<a id="whitelist"></a>
+<form class="pure-form pure-form-aligned advwhitelist" action="" method="POST">
+  <fieldset>
+    <legend>{{_("White List")}}</legend>
+    <p style="margin-top:10px;font-size:0.8em;">
+      {{_("Emails sent to %(name)sxxx@%(mailHost)s will be forwarded to your kindle email.", name='' if (user.name == adminName) else user.name + '__', mailHost=mailHost)}}<br/>
+      <strong>{{_("Example")}}:</strong> '*', 'xxx@example.com', '@example.com'
+    </p>
+    <div class="box-list">
+      {% for wl in user.white_lists() -%}
+      <div class="box">
+        {{wl.mail}}
+        <div class="cornerControls">
+          <a href="javascript:void(0);" class="actionButton mailHookBtn{% if wl.mail in hookFiles %} hookEnabled{% endif %}"
+            data-mail="{{wl.mail}}" data-file="{{hookFiles.get(wl.mail, '')}}"
+            title="{{_('Mail preprocess hook')}}">{{_("Hooked") if wl.mail in hookFiles else _("Hook")}}</a>
+          <a href="/advanceddel?wlist_id={{wl.id}}" class="actionButton">{{_("Delete")}}</a>
+        </div>
+      </div>
+      {% endfor -%}
+      <div class="box">
+        <input type="text" name="wlist" placeholder="{{_('Please input mail address')}}" class="pure-input-1" />
+        <div class="cornerControls">
+          <input type="submit" value="{{_('Add')}}" class="actionButton add" />
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</form>
+<style type="text/css">
+.mailHookBtn.hookEnabled {font-weight: bold;color: #0078e7;}
+</style>
+{% endblock -%}
+
+{% block js -%}
+<script type="text/javascript">
+Object.assign(i18n, {
+  mailHook: "{{_('Mail preprocess hook')|safe}}",
+  upload: "{{_('Upload')|safe}}",
+  view: "{{_('View')|safe}}",
+  selectFile: "{{_('Please select a file.')|safe}}",
+  hookExisted: "{{_('A hook file ({0}) already exists for this address, you can replace or delete it.')|safe}}",
+  hookTips: "{{_('The hook is a normal python file used to preprocess the mail from this sender before delivery. Define one or both of the following functions in the file:')|safe}}",
+  hookUploaded: "{{_('The hook file have been saved successfully.')|safe}}",
+  hookDeleted: "{{_('The hook file have been deleted.')|safe}}",
+  hookFuncSign: `def hook_email(sender, to, subject, txtBodies, htmlBodies, attachments):
+    #return None or (subject, txtBodies, htmlBodies, attachments)
+
+def hook_email_soup(sender, to, soup, attachments):
+    #return None or (soup, attachments)`
+});
+
+//点击某个白名单条目的钩子按钮，打开上传/删除钩子文件对话框
+function OpenMailHookDialog(mail, filename) {
+  var esc = $('<div/>').text(mail).html();
+  var tips = filename ? i18n.hookExisted.format(filename) : i18n.hookTips;
+  var ostr = `<h3 style="padding:0px;margin:0px auto 20px auto;text-align:center;">${i18n.mailHook} : ${esc}</h3>
+    <p style="font-size:0.85em;">${tips}</p>
+    <pre style="font-size:0.8em;background:#f5f5f5;padding:8px;border-radius:4px;white-space:pre;">${i18n.hookFuncSign}</pre>
+    <div class="pure-control-group" style="margin-top:15px">
+      <label for="hook_file">${i18n.file}</label>
+      <input type="file" name="hook_file" id="hook_file" style="outline:none;" />
+    </div>`;
+  var buttons = [[i18n.upload, 'actionButton act h5-dialog-ok']];
+  if (filename) {
+    buttons.push([i18n.view, 'actionButton h5-dialog-view']);
+    buttons.push([i18n.delete, 'actionButton h5-dialog-delete']);
+  }
+  buttons.push([i18n.cancel, 'actionButton h5-dialog-cancel']);
+  showH5Dialog(ostr, buttons).then(function (idx) {
+    if (idx === 0) {
+      UploadMailHook(mail);
+    } else if (filename && (idx === 1)) {
+      window.open('/advanced/inboundmail/hook/view/' + encodeURIComponent(mail));
+    } else if (filename && (idx === 2)) {
+      DeleteMailHook(mail);
+    }
+  }).catch(function(){});
+}
+
+//上传钩子文件到服务器
+function UploadMailHook(mail) {
+  var fileData = $('#hook_file').prop('files')[0];
+  if (!fileData) {
+    alert(i18n.selectFile);
+    return;
+  }
+  var formData = new FormData();
+  formData.append('mail', mail);
+  formData.append('hook_file', fileData);
+  $.ajax({
+    url: '/advanced/inboundmail/hook',
+    type: 'POST',
+    data: formData,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (data) {
+      if (data.status == 'ok') {
+        alert(i18n.hookUploaded);
+        location.reload();
+      } else if (data.status == i18n.loginRequired) {
+        window.location.href = '/login';
+      } else {
+        alert(data.status);
+      }
+    }
+  });
+}
+
+//删除某个白名单条目的钩子文件
+function DeleteMailHook(mail) {
+  if (!confirm(i18n.areYouSureDelete)) {
+    return;
+  }
+  MakeAjaxRequest('/advanced/inboundmail/hook/delete', 'POST', {mail: mail}, function (resp) {
+    alert(i18n.hookDeleted);
+    location.reload();
+  });
+}
+
+$(function () {
+  $('.mailHookBtn').on('click', function () {
+    OpenMailHookDialog($(this).data('mail'), $(this).data('file'));
+  });
+});
+</script>
+{% endblock -%}

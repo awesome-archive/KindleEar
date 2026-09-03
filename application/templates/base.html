@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+  <meta name="description" content="KindleEar is a open source web app for e-reader owners that aggregates feeds and deliver them to your devices." />
+  {% block titleTag -%}
+  <title>{{ _(title) }} - KindleEar</title>
+  {% endblock -%}
+  <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
+  <link rel="bookmark" href="/static/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/pure-min.css" type="text/css" charset="utf-8"/>
+  <link rel="stylesheet" href="/static/grids-responsive-min.css" type="text/css" charset="utf-8"/>
+  <link rel="stylesheet" href="/static/base.css" type="text/css" charset="utf-8"/>
+
+  {% autoescape off %}
+  <script type="text/javascript">
+  var i18n = {
+    confirmDelete: "{{_('Confirm Deletion')|safe}}",
+    delete: "{{_('Delete')|safe}}",
+    deleteCtrlNoConfirm: "{{_('Delete (Ctrl for no confirm)')|safe}}",
+    viewSrc: "{{_('View Source Code')|safe}}",
+    subscriSep: "{{_('Subscribe (Deliver Separately)')|safe}}",
+    subscribe: "{{_('Subscribe')|safe}}",
+    cannotAddRss: "{{_('Cannot add this custom rss, Error:')|safe}}",
+    cannotDelRss: "{{_('Cannot delete this feed, Error:')|safe}}",
+    fulltext: "{{_('Fulltext')|safe}}",
+    share: "{{_('Share')|safe}}",
+    areYouSureDelete: "{{_('Are you sure to delete?')|safe}}",
+    reportThisFeedInvalid: "{{_('Report to the server that this feed is invalid.')|safe}}",
+    areYouSureRemoveAll: "{{_('Are you sure to REMOVE ALL CUSTOM RSS?')|safe}}",
+    shareLinksHappiness: "{{_('Share links, share happiness')|safe}}",
+    category: "{{_('Category')|safe}}",
+    language: "{{_('Language')|safe}}",
+    shareCatTips: "{{_('Please write a category in text field if the one you wish is not in the list.')|safe}}",
+    ok: "{{_('Ok')|safe}}",
+    cancel: "{{_('Cancel')|safe}}",
+    share: "{{_('Share')|safe}}",
+    langInvalid: "{{_('Language code invalid')|safe}}",
+    thankForShare: "{{_('Thank you for sharing.')|safe}}",
+    close: "{{_('Close')|safe}}",
+    unsubscribe: "{{_('Unsubscribe')|safe}}",
+    cannotSubsRecipe: "{{_('Cannot subscribe this recipe, Error:')|safe}}",
+    areYouSureUnsubscribe: "{{_('Are you sure to Unsubscribe ({0})?')|safe}}",
+    cannotUnsubsRecipe: "{{_('Cannot unsubscribe this recipe, Error:')|safe}}",
+    alreadySubscribed: "{{_('The recipe is already subscribed.')|safe}}",
+    subscriptionInfo: "{{_('Website login lnformation')|safe}}",
+    account: "{{_('Account')|safe}}",
+    password: "{{_('Password')|safe}}",
+    submit: "{{_('Submit')|safe}}",
+    recipeLoginTips: "{{_('If any field is left blank, the server will clear the saved login information.')|safe}}",
+    cannotSetSubsInfo: "{{_('Cannot set the website login information, Error:')|safe}}",
+    uploadCustomRecipe: "{{_('Upload custom recipe')|safe}}",
+    congratulations: "{{_('Congratulations')|safe}}",
+    thanks: "{{_('Thanks')|safe}}",
+    recipeUploadedTips: "{{_('Your recipe has been uploaded, and it can be found in the Library section. If you dont see it, please make sure to switch to the correct language.')|safe}}",
+    recipeDeleted: "{{_('Your recipe have been deleted.')|safe}}",
+    kindleifySelection: "{{_('Kindleify Selection')|safe}}",
+    verify: "{{_('Verify')|safe}}",
+    verified: "{{_('Verified')|safe}}",
+    passwordWrong: "{{_('The username does not exist or password is wrong.')|safe}}",
+    fileIsNotInMime: "{{_('The file you chosen is not an acceptable type.')|safe}}",
+    fileUploaded: "{{_('The file have been uploaded successfully.')|safe}}",
+    feedSubscribed: "{{_('This feed has been successfully subscribed.')|safe}}",
+    thank4RssFeedback: "{{_('Thank you for your feedback, this feed will be reviewed soon.')|safe}}",
+    confirmShareRecipe: "{{_('Are you confirming to share the recipe ({0})?')|safe}}",
+    catAll: "{{_('[All]')|safe}}",
+    catByTime: "{{_('[By Time]')|safe}}",
+    catRandom: "{{_('[Random]')|safe}}",
+    uncategoried: "{{_('[Uncategoried]')|safe}}",
+    noLinksFound: "{{_('There are no links found.')|safe}}",
+    invalidReport: "{{_('Invalid report')|safe}}",
+    confirmInvalidReport: "{{_('Are you confirming that this link is invalid or off the cloud?')|safe}}",
+    customizeDelivTime: "{{_('Customize delivery time')|safe}}",
+    delivDays: "{{_('Delivery days')|safe}}",
+    Mon: "{{_('Mon')|safe}}",
+    Tue: "{{_('Tue')|safe}}",
+    Wed: "{{_('Wed')|safe}}",
+    Thu: "{{_('Thu')|safe}}",
+    Fri: "{{_('Fri')|safe}}",
+    Sat: "{{_('Sat')|safe}}",
+    Sun: "{{_('Sun')|safe}}",
+    delivTimes: "{{_('Delivery times')|safe}}",
+    customDelivTimesaved: "{{_('The customized delivery time for the recipe has been successfully saved.')|safe}}",
+    accountDeleted: "{{_('The account have been deleted.')|safe}}",
+    namePwdEmpty: "{{_('The username or password is empty.')|safe}}",
+    pwdDismatch: "{{_('The two new passwords are dismatch.')|safe}}",
+    chPwdSuccess: "{{_('Password changed successfully.')|safe}}",
+    addAccountOk: "{{_('Account added successfully.')|safe}}",
+    loginRequired: "{{_('login required')|safe}}",
+    uploadCoversOk: "{{_('Upload cover files successfully.')|safe}}",
+    imgSizeToLarge: "{{_('Total size of the files you selected exceeds 16MB. Please reduce the image resolution or upload in batches.')|safe}}",
+    biTranslator: "{{_('Bilingual Translator')|safe}}",
+    aiSummarizer: "{{_('AI Summarizer')|safe}}",
+    abbrUpl: "{{_('Upl')|safe}}",
+    abbrSep: "{{_('Sep')|safe}}",
+    abbrLog: "{{_('Log')|safe}}",
+    abbrEmb: "{{_('Emb')|safe}}",
+    abbrTr: "{{_('Tr')|safe}}",
+    abbrTts: "{{_('Tts')|safe}}",
+    abbrAi: "{{_('Ai')|safe}}",
+    testEmailOk: "{{_('The test email has been successfully sent to the following addresses. Please check your inbox or spam folder to confirm its delivery. Depending on your email server, there may be a slight delay.')|safe}}",
+    processing: "{{_('Processing...')|safe}}",
+    configOk: "{{_('The configuration validation is correct.')|safe}}",
+    title: "{{_('Title')|safe}}",
+    tts: "{{_('Text to Speech')|safe}}",
+    action: "{{_('Action')|safe}}",
+    file: "{{_('File')|safe}}",
+    uploadOnly: "{{_('Upload Only')|safe}}",
+    send: "{{_('Send')|safe}}",
+    nothingHere: "{{_('There is nothing here.')|safe}}",
+    selectSingleItem: "{{_('Please select a single item.')|safe}}",
+    selectAtleastOneItem: "{{_('Please select at least one item.')|safe}}",
+    someParamsMissing: "{{_('Some parameters are missing or wrong.')|safe}}",
+    mailBeenSent: "{{_('The email has been sent.')|safe}}",
+    from: "{{_('From')|safe}}",
+    to: "{{_('To')|safe}}",
+    subject: "{{_('Subject')|safe}}",
+    time: "{{_('Time')|safe}}",
+    size: "{{_('Size')|safe}}",
+    dateType: "{{_('Date type')|safe}}",
+    weekday: "{{_('Weekday')|safe}}",
+    date: "{{_('Date')|safe}}",
+    settingIsPrioritized: "{{_('This setting is prioritized.')|safe}}",
+    multiValuesWithCommas: "{{_('Combine multiple values with commas.')}}",
+    putFileInDict: "{{_('Put dictionary in dict folder')}}"
+  };
+  </script>
+  {% block javascript_inhead %}
+  {% endblock -%}
+  {% endautoescape %}
+  {% block cssfiles %}{% endblock -%}
+  {% block css %}{% endblock -%}
+</head>
+
+{% block bodytag -%}
+<body>
+{% endblock -%}
+  <div id="content">
+    <!-- Header Navigation -->
+    <div class="header pure-menu pure-menu-horizontal">
+    {% block header -%}
+      <div>
+        <a href="/" class="pure-menu-heading pure-menu-link logo">KindleEar</a>
+        <a href="/reader" target="_blank" class="pure-menu-heading pure-menu-link reader-link">Reader</a>
+      </div>
+      {% block header_loginfo -%}
+      <ul class="pure-menu-list home-menu">
+        {% if session.get('userName') -%}
+        <li class="pure-menu-item"><a href="/admin" class="pure-menu-link">{{session.get('userName')}}</a></li>
+        <li class="pure-menu-item"><a href="/logout" class="pure-menu-link">{{_("Logout")}}</a></li>
+        {% else -%}
+        <li class="pure-menu-item"><a href="/login" class="pure-menu-link">{{_("Login")}} </a></li>
+        {% if g.allowSignup -%}
+        <li class="pure-menu-item"><a href="/signup" class="pure-menu-link"> {{_("Signup")}}</a></li>
+        {% endif -%}
+        {% endif -%}
+        <li class="pure-menu-item">
+          <!-- 语言选择下拉框 -->
+          {% set currLang = g._flask_babel.babel_locale | string %}
+          <select class="language-select" id="languageSelect" onchange="handleLanguageChange()">
+            <option value="en" {% if currLang == 'en' %}selected="selected"{% endif %}>EN</option>
+            <option value="zh" {% if currLang == 'zh' %}selected="selected"{% endif %}>ZH</option>
+            <option value="de" {% if currLang == 'de' %}selected="selected"{% endif %}>DE</option>
+            <option value="es" {% if currLang == 'es' %}selected="selected"{% endif %}>ES</option>
+            <option value="fr" {% if currLang == 'fr' %}selected="selected"{% endif %}>FR</option>
+            <option value="it" {% if currLang == 'it' %}selected="selected"{% endif %}>IT</option>
+            <option value="ja" {% if currLang == 'ja' %}selected="selected"{% endif %}>JA</option>
+            <option value="ko" {% if currLang == 'ko' %}selected="selected"{% endif %}>KO</option>
+            <option value="pt" {% if currLang == 'pt' %}selected="selected"{% endif %}>PT</option>
+            <option value="ru" {% if currLang == 'ru' %}selected="selected"{% endif %}>RU</option>
+            <option value="tr" {% if currLang == 'tr' %}selected="selected"{% endif %}>TR</option>
+          </select>
+        </li>
+      </ul>
+      {% endblock -%}
+    {% endblock -%}
+    </div>
+
+    {% block menubar -%}
+    {% if session.get('userName') -%}
+    <div class="pure-menu pure-menu-horizontal pure-menu-scrollable app-menu">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item {% if tab == 'my' %}pure-menu-selected{% endif %}"><a href="/my" class="pure-menu-link">{{_("Feeds")}}</a></li>
+        <li class="pure-menu-item {% if tab == 'set' %}pure-menu-selected{% endif %}"><a href="/settings" class="pure-menu-link">{{_("Settings")}}</a></li>
+        <li class="pure-menu-item {% if tab == 'logs' %}pure-menu-selected{% endif %}"><a href="/logs" class="pure-menu-link">{{_("Logs")}}</a></li>
+        <li class="pure-menu-item {% if tab == 'admin' %}pure-menu-selected{% endif %}"><a href="/admin" class="pure-menu-link">{{_("Account")}}</a></li>
+        <li class="pure-menu-item {% if tab == 'advset' %}pure-menu-selected{% endif %}"><a href="/advanced" class="pure-menu-link">{{_("Advanced")}}</a></li>
+        <li class="pure-menu-item {% if tab == 'shared' %}pure-menu-selected{% endif %}"><a href="/library" class="pure-menu-link">{{_("Shared")}}</a></li>
+        <li class="pure-menu-item"><a href="/reader" class="pure-menu-link" target="_blank">{{_("Reader")}}</a></li>
+      </ul>
+    </div>
+    {% endif -%}
+    {% endblock -%}
+
+    {% block content -%}
+    {% endblock -%}
+    <!-- general h5 dialog -->
+    <dialog id="h5-dialog">
+      <div id="h5-dialog-closebutton">X</div>
+      <div id="h5-dialog-content"></div>
+      <div id="h5-dialog-buttons"></div>
+    </dialog>
+    <div class="footer-sticker"></div>
+  </div>
+
+  {% block footer -%}
+  <div class="footer l-box">
+    <p>
+      <small>
+      2013-2025 &copy; KindleEar&nbsp;@{{g.version}} ｜
+      <a href="https://cdhigh.github.io/KindleEar" target="_blank">Docs</a> ｜
+      <a href="https://github.com/cdhigh/kindleear" target="_blank">Github page</a> ｜
+      <a href="https://console.cloud.google.com/appengine" target="_blank">App Engine</a>
+      </small>
+    </p>
+  </div>
+  {% endblock -%}
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="/static/jquery-3.7.1.min.js"><\/script>');</script>
+<!--<script type="text/javascript" src="/static/jquery-3.7.1.min.js"></script>-->
+<script type="text/javascript" src="/static/base.js" charset="utf-8"></script>
+{% block jsfiles %}{% endblock -%}
+{% block js %}{% endblock -%}
+</body>
+</html>
